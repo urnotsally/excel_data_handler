@@ -10,8 +10,8 @@ from openpyxl.utils import column_index_from_string
 import utils
 
 
-cfg = utils.load_config()
-
+cfg = utils.load_config('datafilter')
+setTitleStyle = True
 
 def format_row(row):
     new_raw = []
@@ -51,7 +51,7 @@ def main():
             return 1
         passenger_sheet.append(cfg.titles)
         other_sheet.append(cfg.titles)
-        if cfg.setTitleStyle:
+        if setTitleStyle:
             for cell in passenger_sheet[1]:
                 cell.style = cfg.style_titleRow
             for cell in other_sheet[1]:

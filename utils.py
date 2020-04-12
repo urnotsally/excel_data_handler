@@ -113,15 +113,15 @@ def _get_keyword_count_excel(cfg):
 
 
 def load_config(sheet_name=None):
+    config_map = {'datafilter': _get_data_filter_excel,
+                  'keywordcount': _get_keyword_count_excel}
     if not os.path.exists(config_path):
         print_stdout('Error: can not find config file, please check! [%s]' % config_path)
         return
-    cfg_dict = {}
     if not sheet_name:
         sheet = load_workbook(filename=config_path).active
-        cfg_dict = _get_data_filter_excel(sheet)
+        sheet_name = sheet.title
     else:
         sheet = load_workbook(filename=config_path).get_sheet_by_name(sheet_name)
-        cfg_dict = _get_keyword_count_excel(sheet)
-
+    cfg_dict = config_map[sheet_name](sheet)
     return config.Config(cfg_dict)

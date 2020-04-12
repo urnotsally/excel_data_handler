@@ -6,6 +6,7 @@ from openpyxl.utils import column_index_from_string
 import os
 import sys
 import utils
+
 cfg = utils.load_config('keywordcount')
 
 
@@ -15,6 +16,7 @@ def keyword_count(row):
     match_row = []
     row_index = None
     for cell in row:
+
         if isinstance(cell, EmptyCell):
             continue
         value = cell.value
@@ -24,18 +26,22 @@ def keyword_count(row):
             out_row.append(value)
         for key in cfg.keywords:
             if key in value:
-                last = key_match.get(key, None)
-                if not last:
-                    key_match[key] = value
-                else:
-                    if last != value:
-                        match_row.append(last)
-                        match_row.append(value)
-                        row_index = cell.row
+                utils.print_stdout('found keyword [' + key + '] in [' + cell.coordinate + ']')
+                key_match[key] = value
+                row_index = cell.row
                 break
-    if len(match_row) > 1:
-        utils.print_stdout('output row' + row_index + "...")
-        return out_row + match_row
+                # last = key_match.get(key, None)
+                # if not last:
+                #     key_match[key] = value
+                # else:
+                #     if last != value:
+                #         match_row.append(last)
+                #         match_row.append(value)
+                #         row_index = cell.row
+                # break
+    if len(key_match) > 1:
+        utils.print_stdout('output row [' + str(row_index) + ']')
+        return out_row + key_match.values()
     return []
 
 
@@ -60,6 +66,7 @@ def main():
             out_sheet.append(res)
 
     wb1.save(cfg.output_path)
+    utils.print_stdout('Save result to Excel [%s]' % cfg.output_path)
 
 
 if __name__ == '__main__':
